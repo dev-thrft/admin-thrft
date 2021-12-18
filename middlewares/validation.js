@@ -18,16 +18,13 @@ exports.inputValidation = (req, res, next) => {
 exports.productValidation = (req, res, next) => {
     const {
         name,
-        price,
         description,
-        size,
-        images,
-        quantity,
-        category
+        skus,
+        images
     } = req.body;
 
 
-    if (!name || !price || !description || !size || !quantity || !images || !category)
+    if (!name || !description || !images)
         return next(new Exception('All fields are required', 401));
     
     // Image input validation
@@ -43,25 +40,27 @@ exports.productValidation = (req, res, next) => {
     if (name.length < 3 || name.length > 255)
         return next(new Exception('Name must be between 3 and 255 characters', 401));
 
-    // price validation
-    if (price < 0 || price > 1000000)
-        return next(new Exception('Price must be between 0 and 1000000', 401));
-
     // description validation
     if (description.length < 3 || description.length > 1024)
         return next(new Exception('Description must be between 3 and 1024 characters', 401));
+    
+    skus.forEach(sku => {
+        const { price, size, quantity, cat } = sku;
+        // price validation
+        if (price < 0 || price > 1000000)
+        return next(new Exception('Price must be between 0 and 1000000', 401));
 
-    // size validation
-    if (size.length < 3 || size.length > 32)
-        return next(new Exception('Size must be between 3 and 32 characters', 401));
+        // size validation
+        if (size.length < 3 || size.length > 32)
+            return next(new Exception('Size must be between 3 and 32 characters', 401));
+        // quantity validation
+        if (quantity < 1 || quantity > 99)
+            return next(new Exception('Quantity must be between 1 and 99', 401));
+        // category validation   
+        if(!Array.isArray(cat) || cat.length < 1)
+            return next(new Exception('Must have at least one category', 401));
 
-    // quantity validation
-    if (quantity < 1 || quantity > 99)
-        return next(new Exception('Quantity must be between 1 and 99', 401));
-
-    // category validation
-    if (category.length < 3 || category.length > 32)
-        return next(new Exception('Category must be between 3 and 32 characters', 401));
+    });
 
     next();
 };

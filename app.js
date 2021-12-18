@@ -23,10 +23,11 @@ app.use(cors({
 // limit api calls
 app.use(limitCallRequest);	
 
-
+// routes
 
 app.use('/auth', require('./routes/admin.route'));
 app.use('/products', require('./routes/product.route'));
+app.use('/categories', require('./routes/category.route'));
 
 const PORT = process.env.PORT || 5000;
 

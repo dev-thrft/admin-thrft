@@ -17,7 +17,6 @@ exports.auth = (req, _res, next) => {
 exports.apiAuth = (req, res, next) => {
     const authorization = req.headers['x-api-key'];
 
-    console.log(authorization);
     if (!authorization) return res.sendStatus(403);
 
     if(!authorization) return res.sendStatus(403);

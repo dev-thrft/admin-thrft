@@ -4,7 +4,7 @@ const Exception = require('../utils/Exception');
 const exceptionHandler = (err, _req, res, _next) => {
 	let error = { ...err };
 	error.message = err.message;
-
+	console.log(err);
 	if(err.name === 'CastError'){
 		const message = 'Address not found!';
 		error = new Exception(message, 404);

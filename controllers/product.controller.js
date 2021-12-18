@@ -22,22 +22,16 @@ exports.createProduct = async (req, res, next) => {
     try {
         const { 
             name, 
-            price, 
             description, 
-            size, 
-            quantity, 
-            images, 
-            category 
+            skus,
+            images,
         } = req.body;
 
         const product = new Product({
             name,
-            price,
             description,
-            size,
-            quantity,
-            images,
-            category
+            skus,
+            images
         });
         await product.save()
             .then(() => {
