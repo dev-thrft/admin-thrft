@@ -1,6 +1,23 @@
 const mongoose = require('mongoose');   
 const Category = require('./category.model');
 const Exception = require('../utils/Exception');
+
+/**
+ * New Product Model will be:
+ * 
+ * Name
+ * Description
+ * SKU :
+ *      SkuId
+ *      price
+ *      size
+ *      quantity
+ * Images :
+ *      id
+ *      title
+ *      src
+ */
+
 const ProductSchema = new mongoose.Schema({
     n: {
         type: String,
