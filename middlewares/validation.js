@@ -1,6 +1,7 @@
 const Exception = require('../utils/Exception');
 const { isValidHttpUrl } = require('../utils/urlValidator');
-
+const { Limitter, ArrayLimitter } = require('../utils/limitter');
+// for admin validation
 exports.inputValidation = (req, res, next) => {
     const { username, password } = req.body;
 
@@ -16,51 +17,50 @@ exports.inputValidation = (req, res, next) => {
     next();
 };
 
+// for product validation
 exports.productValidation = (req, res, next) => {
     const {
         name,
         description,
+        categories,
+        quality,
         skus,
-        images,
-        categories
+        images
     } = req.body;
 
 
-    if (!name || !description || !images)
+    if (!name || !description || !images || !skus || !categories || !quality)
         return next(new Exception('All fields are required', 401));
     
     // Image input validation
-    if (!Array.isArray(images)) 
-        return next(new Exception('Images must be an array', 401));
-    if(images.length < 0)
-        return next(new Exception('Must have at least one image', 401));
+    ArrayLimitter(images, 1, 5, 'Images', next);
 
+    // category validation   
+    ArrayLimitter(categories, 1, 8, 'Categories', next);
+
+    // Image url validation
     const areAllImagesValid = images.every(image => isValidHttpUrl(image.src));
-    if (!areAllImagesValid) return next(new Exception('All images must be valid.', 401));
+    if (!areAllImagesValid) 
+        return next(new Exception('All images must be valid.', 401));
 
     // name validation
-    if (name.length < 3 || name.length > 255)
-        return next(new Exception('Name must be between 3 and 255 characters', 401));
+    Limitter(name.length, 3, 255, 'Name', next);
 
     // description validation
-    if (description.length < 3 || description.length > 1024)
-        return next(new Exception('Description must be between 3 and 1024 characters', 401));
-        // category validation   
-    if(!Array.isArray(categories) || categories.length < 1)
-        return next(new Exception('Must have at least one category', 401));
-
+    Limitter(description.length, 3, 1024, 'Description', next);
+       
+    // quality validation
+    Limitter(quality.length, 2, 3, 'Quality', next);
     skus.forEach(sku => {
         const { price, size, quantity } = sku;
         // price validation
-        if (price < 0 || price > 1000000)
-        return next(new Exception('Price must be between 0 and 1000000', 401));
+        Limitter(price, 1, 1000000, 'Price', next);
 
         // size validation
-        if (size.length < 3 || size.length > 32)
-            return next(new Exception('Size must be between 3 and 32 characters', 401));
+        Limitter(size.length, 3, 32, 'Size', next);
+        
         // quantity validation
-        if (quantity < 1 || quantity > 99)
-            return next(new Exception('Quantity must be between 1 and 99', 401));
+        Limitter(quantity, 1, 99, 'Quantity', next);
     });
 
     next();
