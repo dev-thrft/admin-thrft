@@ -8,6 +8,7 @@ const Exception = require('../utils/Exception');
  * Name
  * Description
  * Category
+ * Quality
  * SKU :
  *      SkuId
  *      price
@@ -48,6 +49,11 @@ const ProductSchema = new mongoose.Schema({
             required: true,
         }
     ],
+    qua: {
+        type: String,
+        required: true,
+        alias: 'quality'    
+    },
     skus: [
         new mongoose.Schema(
             {
