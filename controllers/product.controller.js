@@ -23,8 +23,9 @@ exports.createProduct = async (req, res, next) => {
         const { 
             name,   
             description, 
-            skus,
             categories,
+            quality,
+            skus,
             images,
         } = req.body;
 
@@ -32,6 +33,7 @@ exports.createProduct = async (req, res, next) => {
             name,
             description,
             categories,
+            quality,
             skus,
             images
         });
@@ -90,17 +92,21 @@ exports.updateProduct = async (req, res, next) => {
     const { id } = req.params;
     const { 
         name, 
-        description,
-        images, 
-        categories 
+        description, 
+        categories,
+        quality,
+        skus,
+        images
     } = req.body;
     try {
         if(!id) return next(new Exception('Product ID is required', 401));
         await Product.findByIdAndUpdate(id, {
             name,
             description,
-            images,
-            categories
+            categories,
+            quality,
+            skus,
+            images
         })
             .then(() => {
                 res.status(200).json({
@@ -122,7 +128,8 @@ exports.deleteProduct = async (req, res, next) => {
         await Product.findById(id)
             .then(product => {
                 // Move product to archive
-                    const archive = new ProductArchive(product.toJSON());
+                    const archive = new ProductArchive(product.toJSON()); // converted to JSON object
+                    // add archive properties
                     archive.isArchived = true;
                     archive.archivedAt = new Date();
 
@@ -147,8 +154,10 @@ exports.restoreProduct = async (req, res, next) => {
         await ProductArchive.findById(id)
             .then(archived => {
                 // Move archived item to product
-                    const product = new Product(archived.toJSON());
-                    product.isArchived = true;
+                    const product = new Product(archived.toJSON()); // converted to JSON object
+                    
+                    // flip archive properties
+                    product.isArchived = false;
                     product.archivedAt = null;
 
                     product.save(); // Save to archive
