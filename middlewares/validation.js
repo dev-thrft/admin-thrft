@@ -1,4 +1,5 @@
 const Exception = require('../utils/Exception');
+const { isValidHttpUrl } = require('../utils/urlValidator');
 
 exports.inputValidation = (req, res, next) => {
     const { username, password } = req.body;
@@ -64,14 +65,4 @@ exports.productValidation = (req, res, next) => {
 
     next();
 };
-const isValidHttpUrl = (string) => {
-    let url;
-    
-    try {
-        url = new URL(string);
-    } catch (_) {
-        return false;  
-    }
-    
-    return url.protocol === 'http:' || url.protocol === 'https:';
-};
+

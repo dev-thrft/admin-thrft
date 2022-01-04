@@ -127,14 +127,19 @@ ProductSchema.pre('save', async function(next) {
     
     // check category
     const categories = product.categories;
-    console.log(categories);
+
     categories.forEach(category => {
+        // trim for unneccessary spaces and convert to lowercase
+        category = category.trim().toLowerCase();
+
         // if category is not available, throw error
         const isAvailable = availableCategories.find(cat => cat.category === category);
+
         if(!isAvailable)
             return next(new Exception(`Category ${category} is invalid.`, 401));
     });
 
+    // finished sanitizing
     next();
 });
 
