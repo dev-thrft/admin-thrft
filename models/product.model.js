@@ -7,6 +7,7 @@ const Exception = require('../utils/Exception');
  * 
  * Name
  * Description
+ * Category
  * SKU :
  *      SkuId
  *      price
@@ -41,13 +42,18 @@ const ProductSchema = new mongoose.Schema({
         maxlength: 1024,
         alias: 'description'
     },
+    categories: [
+        {
+            type: String,
+            required: true,
+        }
+    ],
     skus: [
         new mongoose.Schema(
             {
                 sid: {
-                    type: mongoose.Types.ObjectId,
+                    type: String,
                     required: true,
-                    default: mongoose.Types.ObjectId(),
                     alias: 'skuId'
                 },
                 p: {
@@ -80,14 +86,9 @@ const ProductSchema = new mongoose.Schema({
             },
         {_id: false})
     ],
-    categories: [
-        {
-            type: String,
-            required: true,
-        }
-    ],
     imgs: {
-            type: [new mongoose.Schema({
+        type: [
+            new mongoose.Schema({
                 t: {
                     type: String,
                     required: true,
@@ -98,10 +99,10 @@ const ProductSchema = new mongoose.Schema({
                     required: true,
                     alias: 'src'
                 }
-            })] ,
-            alias: 'images'
-        }
-    ,
+            })
+        ],
+        alias: 'images'
+    },
     isa: {
         type: Boolean,
         alias: 'isArchived'
@@ -115,7 +116,7 @@ const ProductSchema = new mongoose.Schema({
     collection: 'products'
 });
 
-// sanitize catogeries before saving
+// sanitize categories before saving
 ProductSchema.pre('save', async function(next) {
     const product = this;
 
