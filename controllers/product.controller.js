@@ -21,15 +21,17 @@ exports.getProducts = async (req, res, next) => {
 exports.createProduct = async (req, res, next) => {
     try {
         const { 
-            name, 
+            name,   
             description, 
             skus,
+            categories,
             images,
         } = req.body;
 
         const product = new Product({
             name,
             description,
+            categories,
             skus,
             images
         });
@@ -88,23 +90,17 @@ exports.updateProduct = async (req, res, next) => {
     const { id } = req.params;
     const { 
         name, 
-        price, 
-        description, 
-        size, 
-        quantity, 
+        description,
         images, 
-        category 
+        categories 
     } = req.body;
     try {
         if(!id) return next(new Exception('Product ID is required', 401));
         await Product.findByIdAndUpdate(id, {
             name,
-            price,
             description,
-            size,
-            quantity,
             images,
-            category
+            categories
         })
             .then(() => {
                 res.status(200).json({
@@ -176,6 +172,82 @@ exports.getArchivedProducts = async (req, res, next) => {
                 res.status(200).json({
                     success: true,
                     products
+                });
+            })
+            .catch(err => next(err));
+    }
+    catch (err) {
+        return next(err);
+    }
+};
+
+exports.addSKU = async (req, res, next) => {
+    const { id } = req.params;
+    const { sku } = req.body;
+    try {
+        if(!id) return next(new Exception('Product ID is required', 401));
+        await Product.findById(id)
+            .then(product => {
+                product.skus.push(sku);
+                product.save();
+                res.status(200).json({
+                    success: true,
+                    message: 'SKU added successfully'
+                });
+            })
+            .catch(err => next(err));
+    }
+    catch (err) {
+        return next(err);
+    }
+};
+
+exports.removeSKU = async (req, res, next) => {
+    const { id } = req.params;
+    const { size, count } = req.body;
+
+    try {
+        if(!id) return next(new Exception('Product ID is required', 401));
+        await Product.findById(id)
+            .then(product => {
+                const { skus } = product; 
+                const filtered = skus.filter(sku => size === sku.size).slice(0, skus.length-count);
+                const newSKUs = [...product.skus, filtered];
+                product.skus = newSKUs;
+                product.save();
+                res.status(200).json({
+                    success: true,
+                    message: 'SKU/s removed successfully.'
+                });
+            })
+            .catch(err => next(err));
+    }
+    catch (err) {
+        return next(err);
+    }
+};
+
+exports.updateSKU = async (req, res, next) => {
+    const { id } = req.params;
+    const { skuId, price, size, quantity, category } = req.body;
+    try {
+        if(!id) return next(new Exception('Product ID is required', 401));
+        await Product.findById(id)
+            .then(product => {
+                const newSKUs = product.skus.map(sku => {
+                    if(sku.skuId.toString() === skuId) {
+                        sku.price = price;
+                        sku.size = size;
+                        sku.quantity = quantity;
+                        sku.category = category;
+                    }
+                    return sku;
+                });
+                product.skus = newSKUs;
+                product.save();
+                res.status(200).json({
+                    success: true,
+                    message: 'SKU updated successfully.'
                 });
             })
             .catch(err => next(err));

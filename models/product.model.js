@@ -76,10 +76,15 @@ const ProductSchema = new mongoose.Schema({
                     min: 1,
                     max: 99,
                     alias: 'quantity'
-                },
-                cat: [String]
+                }
             },
         {_id: false})
+    ],
+    categories: [
+        {
+            type: String,
+            required: true,
+        }
     ],
     imgs: {
             type: [new mongoose.Schema({
@@ -114,20 +119,19 @@ const ProductSchema = new mongoose.Schema({
 ProductSchema.pre('save', async function(next) {
     const product = this;
 
-    const availableCategories = await Category.find({},'-_id -__v');
+    const availableCategories = await Category.find({},'-_id -__v'); // do not include _id and __v
 
     if(!product.isModified('skus')) 
         return next();
     
     // check category
-    const categories = product.skus.map(sku => sku.cat).flat();
-
+    const categories = product.categories;
+    console.log(categories);
     categories.forEach(category => {
         // if category is not available, throw error
         const isAvailable = availableCategories.find(cat => cat.category === category);
-        if(!isAvailable) {
+        if(!isAvailable)
             return next(new Exception(`Category ${category} is invalid.`, 401));
-        }
     });
 
     next();

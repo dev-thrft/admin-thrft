@@ -12,7 +12,10 @@ const {
     updateProduct,
     deleteProduct,
     restoreProduct,
-    getArchivedProducts
+    getArchivedProducts,
+    addSKU,
+    updateSKU,
+    removeSKU
 
 } = require('../controllers/product.controller');
 /**
@@ -36,5 +39,10 @@ router.put('/:id',productValidation, auth, updateProduct);
 router.delete('/:id', auth, deleteProduct);
 router.post('/restore/:id', auth, restoreProduct);
 router.get('/archived', auth, getArchivedProducts);
+
+// SKUs routes
+router.post('/:id/addSKU', auth, addSKU);
+router.delete('/:id/deleteSKU', auth, removeSKU);
+router.put('/:id/updateSKU', auth, updateSKU);
 
 module.exports = router;

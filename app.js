@@ -24,7 +24,6 @@ app.use(cors({
 app.use(limitCallRequest);	
 
 // routes
-
 app.use('/auth', require('./routes/admin.route'));
 app.use('/products', require('./routes/product.route'));
 app.use('/categories', require('./routes/category.route'));

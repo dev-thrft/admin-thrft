@@ -20,7 +20,8 @@ exports.productValidation = (req, res, next) => {
         name,
         description,
         skus,
-        images
+        images,
+        categories
     } = req.body;
 
 
@@ -43,9 +44,12 @@ exports.productValidation = (req, res, next) => {
     // description validation
     if (description.length < 3 || description.length > 1024)
         return next(new Exception('Description must be between 3 and 1024 characters', 401));
-    
+        // category validation   
+    if(!Array.isArray(categories) || categories.length < 1)
+        return next(new Exception('Must have at least one category', 401));
+
     skus.forEach(sku => {
-        const { price, size, quantity, cat } = sku;
+        const { price, size, quantity } = sku;
         // price validation
         if (price < 0 || price > 1000000)
         return next(new Exception('Price must be between 0 and 1000000', 401));
@@ -56,10 +60,6 @@ exports.productValidation = (req, res, next) => {
         // quantity validation
         if (quantity < 1 || quantity > 99)
             return next(new Exception('Quantity must be between 1 and 99', 401));
-        // category validation   
-        if(!Array.isArray(cat) || cat.length < 1)
-            return next(new Exception('Must have at least one category', 401));
-
     });
 
     next();
