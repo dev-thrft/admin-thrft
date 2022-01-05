@@ -11,16 +11,6 @@ const ProductSchema = new mongoose.Schema({
         maxlength: 255,
         alias: 'name'
     },
-    p: {
-        type: Number,
-        required: [
-            true,
-            'Product price is required.'
-        ],
-        trim: true,
-        min: 0,
-        alias: 'price'
-    },
     desc: {
         type: String,
         required: [
@@ -32,45 +22,71 @@ const ProductSchema = new mongoose.Schema({
         maxlength: 1024,
         alias: 'description'
     },
-    s: {
-        type: String,
-        required: [
-            true,
-            'Product size is required.'
-        ],
-        trim: true,
-        maxlength: 32,
-        alias: 'size'
-    },
-    q: {
-        type: Number,
-        trim: true,
-        min: 1,
-        max: 99,
-        alias: 'quantity'
-    },
-    images: [
-        new mongoose.Schema({
-            title: {
-                type: String,
-                required: true
-            },
-            src: {
-                type: String,
-                required: true
-            }
-        })
+    categories: [
+        {
+            type: String,
+            required: true,
+        }
     ],
-    cat: {
+    qua: {
         type: String,
-        required: [
-            true,
-            'Product category must be set.'
+        required: true,
+        alias: 'quality'    
+    },
+    skus: [
+        new mongoose.Schema(
+            {
+                sid: {
+                    type: String,
+                    required: true,
+                    alias: 'skuId'
+                },
+                p: {
+                    type: Number,
+                    required: [
+                        true,
+                        'Product price is required.'
+                    ],
+                    trim: true,
+                    min: 0,
+                    alias: 'price'
+                },
+                s: {
+                    type: String,
+                    required: [
+                        true,
+                        'Product size is required.'
+                    ],
+                    trim: true,
+                    maxlength: 32,
+                    alias: 'size'
+                },
+                q: {
+                    type: Number,
+                    trim: true,
+                    min: 1,
+                    max: 99,
+                    alias: 'quantity'
+                }
+            },
+        {_id: false})
+    ],
+    imgs: {
+        type: [
+            new mongoose.Schema({
+                t: {
+                    type: String,
+                    required: true,
+                    alias: 'title'
+                },
+                s: {
+                    type: String,
+                    required: true,
+                    alias: 'src'
+                }
+            })
         ],
-        trim: true,
-        minlength: 3,
-        maxlength: 32,
-        alias: 'category'
+        alias: 'images'
     },
     isa: {
         type: Boolean,
