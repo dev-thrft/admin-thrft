@@ -45,7 +45,7 @@ const ProductSchema = new mongoose.Schema({
                     type: Number,
                     required: [
                         true,
-                        'Product price is required.'
+                        'SKU price is required.'
                     ],
                     trim: true,
                     min: 0,
@@ -55,11 +55,21 @@ const ProductSchema = new mongoose.Schema({
                     type: String,
                     required: [
                         true,
-                        'Product size is required.'
+                        'SKU size is required.'
                     ],
                     trim: true,
                     maxlength: 32,
                     alias: 'size'
+                },
+                sx: {
+                    type: String,
+                    required: [
+                        true,
+                        'SKU sex is required.'
+                    ],
+                    trim: true,
+                    maxlength: 8,
+                    alias: 'sex'
                 },
                 q: {
                     type: Number,

@@ -51,14 +51,18 @@ exports.productValidation = (req, res, next) => {
        
     // quality validation
     Limitter(quality.length, 2, 3, 'Quality', next);
+
     skus.forEach(sku => {
-        const { price, size, quantity } = sku;
+        const { price, size, sex, quantity } = sku;
         // price validation
         Limitter(price, 1, 1000000, 'Price', next);
 
         // size validation
         Limitter(size.length, 3, 32, 'Size', next);
         
+        // sex validation
+        Limitter(sex.length, 3, 8, 'Sex', next);
+
         // quantity validation
         Limitter(quantity, 1, 99, 'Quantity', next);
     });
