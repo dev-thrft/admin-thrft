@@ -12,7 +12,8 @@ const {
     updateProduct,
     deleteProduct,
     restoreProduct,
-    getArchivedProducts
+    getArchivedProducts,
+    getUploadURL
 
 } = require('../controllers/product.controller');
 /**
@@ -26,6 +27,7 @@ const {
  * DELETE:/:id DELETE PRODUCT BY ID | AUTH:TRUE
  * POST:/restore/:id RESTORE PRODUCT BY ID | AUTH:TRUE
  * GET:/archived/ GET ARCHIVED PRODUCTS | AUTH:TRUE
+ * POST:/retrieveURL/ UPLOAD PRODUCT IMAGE | AUTH:TRUE
  */
 
 router.get('/', getProducts);
@@ -37,5 +39,5 @@ router.delete('/:id', auth, deleteProduct);
 router.post('/restore/:id', auth, restoreProduct);
 router.get('/archived', auth, getArchivedProducts);
 
-
+router.get('/retrieveURL', getUploadURL);
 module.exports = router;

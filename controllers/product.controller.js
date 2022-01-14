@@ -2,6 +2,8 @@ const Product = require('../models/product.model');
 const ProductArchive = require('../models/archive/product.archive');
 
 const Exception = require('../utils/Exception');
+const { generateUploadURL } = require('../utils/s3');
+
 
 exports.getProducts = async (req, res, next) => {
     try {
@@ -186,6 +188,21 @@ exports.getArchivedProducts = async (req, res, next) => {
             .catch(err => next(err));
     }
     catch (err) {
+        return next(err);
+    }
+};
+
+exports.getUploadURL = async (req, res, next) => {
+    try {
+        const url = await generateUploadURL()
+            .catch(err => next(err));
+
+        res.status(200).json({
+            success: true,
+            url
+        });
+    }
+    catch(err){
         return next(err);
     }
 };
