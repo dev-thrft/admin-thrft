@@ -1,7 +1,7 @@
 const aws = require('aws-sdk');
 const crypto = require('crypto');
 const { promisify } = require('util');
-const randBytes = promisify(crypto.randomBytes(16));
+const randBytes = promisify(crypto.randomBytes);
 
 
 const bucketName = 'thrft-products';
