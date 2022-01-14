@@ -2,7 +2,7 @@ const Product = require('../models/product.model');
 const ProductArchive = require('../models/archive/product.archive');
 
 const Exception = require('../utils/Exception');
-const { generateUploadURL } = require('../utils/s3');
+const { generateUploadURL, deleteImage } = require('../utils/s3');
 
 
 exports.getProducts = async (req, res, next) => {
@@ -201,6 +201,23 @@ exports.getUploadURL = async (req, res, next) => {
             success: true,
             url
         });
+    }
+    catch(err){
+        return next(err);
+    }
+};
+
+exports.deleteProductImage = async (req, res, next) => {
+    try {
+        const { key } = req.params;
+        await deleteImage(key)
+            .then(() => {
+                res.status(200).json({
+                    success: true,
+                    message: 'Image deleted successfully.'
+                });
+            })
+            .catch(err => next(err));
     }
     catch(err){
         return next(err);

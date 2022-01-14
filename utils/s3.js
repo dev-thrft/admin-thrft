@@ -31,7 +31,18 @@ async function generateUploadURL() {
 
     return signedURL;
 }
+async function deleteImage(key) {
+    const imageName = key;
+
+    const s3Params = {
+        Bucket: bucketName,
+        Key: imageName
+    };
+    
+    return await s3.deleteObject(s3Params).promise();
+}
 
 exports = {
-    generateUploadURL
+    generateUploadURL,
+    deleteImage
 };

@@ -13,7 +13,8 @@ const {
     deleteProduct,
     restoreProduct,
     getArchivedProducts,
-    getUploadURL
+    getUploadURL,
+    deleteProductImage
 
 } = require('../controllers/product.controller');
 /**
@@ -40,4 +41,5 @@ router.post('/restore/:id', auth, restoreProduct);
 router.get('/archived', auth, getArchivedProducts);
 
 router.get('/retrieveURL', getUploadURL);
+router.delete('/deleteImage/:key', auth, deleteProductImage);
 module.exports = router;
